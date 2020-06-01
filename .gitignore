@@ -1,2 +1,4 @@
 .vscode/
 /yolo/cfg/
+/yolo/cfg/__pycache__/
+/yolo/cfg/imgs/
