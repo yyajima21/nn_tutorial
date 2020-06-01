@@ -1,7 +1,7 @@
 "reference: https://blog.paperspace.com/how-to-implement-a-yolo-v3-object-detector-from-scratch-in-pytorch-part-2/"
 
 from __future__ import division
-
+from util import * 
 import torch 
 import torch.nn as nn
 import torch.nn.functional as F 
@@ -209,6 +209,20 @@ def create_modules(blocks):
 
     return (net_info, module_list)
 
+def get_test_input():
+    img = cv2.imread("/home/yyajima/catkin_ws/src/nn_tutorial/yolo/imgs/dog-cycle-car.png")
+    img = cv2.resize(img, (608,608))          #Resize to the input dimension
+    img_ =  img[:,:,::-1].transpose((2,0,1))  # BGR -> RGB | H X W C -> C X H X W 
+    img_ = img_[np.newaxis,:,:,:]/255.0       #Add a channel at 0 (for batch) | Normalise
+    img_ = torch.from_numpy(img_).float()     #Convert to float
+    img_ = Variable(img_)                     # Convert to Variable
+    return img_
+
 if __name__ == '__main__':
-    blocks = parse_cfg("cfg/yolov3.cfg")
-    print(create_modules(blocks))
+    #blocks = parse_cfg("cfg/yolov3.cfg")
+    #print(create_modules(blocks))
+
+    model = Darknet("cfg/yolov3.cfg")
+    inp = get_test_input()
+    pred = model(inp, torch.cuda.is_available())
+    print(pred)
