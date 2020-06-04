@@ -1,4 +1,8 @@
 .vscode/
 /yolo/cfg/
-/yolo/cfg/__pycache__/
-/yolo/cfg/imgs/
+/yolo/data/
+/yolo/det/
+/yolo/imgs/
+/yolo/model/
+/yolo/pallete
+/yolo/__pycache__/
