@@ -37,10 +37,14 @@ def train(args, net, device, trainloader, criterion, optimizer, epoch):
 
         # print statistics
         running_loss += loss.item()
-        if i % 2000 == 1999:    # print every 2000 mini-batches
+        if i % 1000 == 999:    # print every 2000 mini-batches
             print('[%d, %5d] loss: %.3f' % (epoch + 1, i + 1, running_loss / 2000))
             
             running_loss = 0.0
+
+def test(net, device, testloader):
+    return 0
+
 
 def main():
     # Training settings
@@ -105,6 +109,16 @@ def main():
         torch.save(net.state_dict(), PATH)
 
     print('Finished Training')
+
+    net = model.model.Net()
+    net.load_state_dict(torch.load(PATH))
+
+    outputs = net(images)
+
+    _, predicted = torch.max(outputs, 1)
+
+    print('Predicted: ', ' '.join('%5s' % classes[predicted[j]]
+                                for j in range(4)))
 
 if __name__ == '__main__':
     main()
