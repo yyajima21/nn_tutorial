@@ -97,8 +97,12 @@ def main():
     optimizer = optim.SGD(net.parameters(), lr=args.lr, momentum=args.momentum)
 
     # Training code
-    for epoch in range(2):  # loop over the dataset multiple times
+    for epoch in range(args.epochs):  # loop over the dataset multiple times
         train(args, net, device, trainloader, criterion, optimizer, epoch)
+    
+    if args.save_model:
+        PATH = './cifar_net.pth'
+        torch.save(net.state_dict(), PATH)
 
     print('Finished Training')
 
