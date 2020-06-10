@@ -37,8 +37,8 @@ def train(args, net, device, trainloader, criterion, optimizer, epoch):
 
         # print statistics
         running_loss += loss.item()
-        if i % 1000 == 999:    # print every 2000 mini-batches
-            print('[%d, %5d] loss: %.3f' % (epoch + 1, i + 1, running_loss / 2000))
+        if i % 1000 == 999:    # print every 1000 mini-batches
+            print('[%d, %5d] loss: %.3f' % (epoch + 1, i + 1, running_loss / 1000))
             
             running_loss = 0.0
 
@@ -104,6 +104,8 @@ def main():
     for epoch in range(args.epochs):  # loop over the dataset multiple times
         train(args, net, device, trainloader, criterion, optimizer, epoch)
     
+    # Verifying the performance
+    PATH = './cifar_net.pth'
     if args.save_model:
         PATH = './cifar_net.pth'
         torch.save(net.state_dict(), PATH)
