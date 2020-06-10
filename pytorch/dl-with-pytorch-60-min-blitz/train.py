@@ -48,7 +48,7 @@ def test(net, device, testloader):
     
     with torch.no_grad():
         for data in testloader:
-            images, labels = data
+            images, labels = data[0].to(device), data[1].to(device)
             outputs = net(images)
             _, predicted = torch.max(outputs.data, 1)
             total += labels.size(0)
@@ -115,6 +115,7 @@ def main():
     # Training code
     for epoch in range(args.epochs):  # loop over the dataset multiple times
         train(args, net, device, trainloader, criterion, optimizer, epoch)
+        test(net, device, testloader)
     
     # Verifying the performance
     if args.save_model:
@@ -123,37 +124,10 @@ def main():
 
     print('Finished Training')
 
-    correct = 0
-    total = 0
-    
-    with torch.no_grad():
-        for data in testloader:
-            images, labels = data[0].to(device), data[1].to(device)
-            outputs = net(images)
-            _, predicted = torch.max(outputs.data, 1)
-            total += labels.size(0)
-            correct += (predicted == labels).sum().item()
-
-    print('Accuracy of the network on the 10000 test images: %d %%' % (
-        100 * correct / total))
-
 if __name__ == '__main__':
     main()
 
 """
-correct = 0
-total = 0
-with torch.no_grad():
-    for data in testloader:
-        images, labels = data
-        outputs = net(images)
-        _, predicted = torch.max(outputs.data, 1)
-        total += labels.size(0)
-        correct += (predicted == labels).sum().item()
-
-print('Accuracy of the network on the 10000 test images: %d %%' % (
-    100 * correct / total))
-
 class_correct = list(0. for i in range(10))
 class_total = list(0. for i in range(10))
 with torch.no_grad():
