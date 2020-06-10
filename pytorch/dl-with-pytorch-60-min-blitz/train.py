@@ -42,7 +42,7 @@ def train(args, net, device, trainloader, criterion, optimizer, epoch):
             
             running_loss = 0.0
 
-def test(net, device, testloader):
+def test(classes, net, device, testloader):
     correct = 0
     total = 0
     with torch.no_grad():
@@ -131,7 +131,7 @@ def main():
     # Training code
     for epoch in range(args.epochs):  # loop over the dataset multiple times
         train(args, net, device, trainloader, criterion, optimizer, epoch)
-        test(net, device, testloader)
+        test(classes, net, device, testloader)
     
     # Verifying the performance
     if args.save_model:
