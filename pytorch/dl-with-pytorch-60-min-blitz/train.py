@@ -105,58 +105,29 @@ def main():
         train(args, net, device, trainloader, criterion, optimizer, epoch)
     
     # Verifying the performance
-    PATH = './cifar_net.pth'
     if args.save_model:
         PATH = './cifar_net.pth'
         torch.save(net.state_dict(), PATH)
 
     print('Finished Training')
 
-    net = model.model.Net()
-    net.load_state_dict(torch.load(PATH))
+    correct = 0
+    total = 0
+    with torch.no_grad():
+        for data in testloader:
+            images, labels = data
+            outputs = net(images)
+            _, predicted = torch.max(outputs.data, 1)
+            total += labels.size(0)
+            correct += (predicted == labels).sum().item()
 
-    outputs = net(images)
-
-    _, predicted = torch.max(outputs, 1)
-
-    print('Predicted: ', ' '.join('%5s' % classes[predicted[j]]
-                                for j in range(4)))
+    print('Accuracy of the network on the 10000 test images: %d %%' % (
+        100 * correct / total))
 
 if __name__ == '__main__':
     main()
 
 """
-# get some random training images
-dataiter = iter(trainloader)
-images, labels = dataiter.next()
-
-# show images
-imshow(torchvision.utils.make_grid(images))
-# print labels
-print(' '.join('%5s' % classes[labels[j]] for j in range(4)))
-"""
-
-"""
-PATH = './cifar_net.pth'
-torch.save(net.state_dict(), PATH)
-
-dataiter = iter(testloader)
-images, labels = dataiter.next()
-
-# print images
-imshow(torchvision.utils.make_grid(images))
-print('GroundTruth: ', ' '.join('%5s' % classes[labels[j]] for j in range(4)))
-
-net = model.model.Net()
-net.load_state_dict(torch.load(PATH))
-
-outputs = net(images)
-
-_, predicted = torch.max(outputs, 1)
-
-print('Predicted: ', ' '.join('%5s' % classes[predicted[j]]
-                              for j in range(4)))
-
 correct = 0
 total = 0
 with torch.no_grad():
