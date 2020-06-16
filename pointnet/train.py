@@ -1,5 +1,3 @@
-"Reference: https://github.com/nikitakaraevv/pointnet/blob/master/nbs/PointNetClass.ipynb"
-
 import numpy as np
 import math
 import random
@@ -93,7 +91,7 @@ def train(model, train_loader, val_loader=None,  epochs=15, save=True):
 
         # save the model
         if save:
-            torch.save(pointnet.state_dict(), "save_"+str(epoch)".pth")
+            torch.save(pointnet.state_dict(), "save_" + str(epoch) + ".pth")
 
 def main():
     path = Path(os.getcwd() + "/data/ModelNet10")
