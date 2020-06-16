@@ -15,6 +15,30 @@ import utils
 import Dataset
 
 import model.model
+import argparse
+
+def get_args():
+    parser = argparse.ArgumentParser(description='Pointnet Tutorial Example')
+    parser.add_argument('--train-batch-size', type=int, default=32, metavar='N',
+                        help='input batch size for training (default: 4)')
+    parser.add_argument('--test-batch-size', type=int, default=64, metavar='N',
+                        help='input batch size for testing (default: 4)')
+    parser.add_argument('--epochs', type=int, default=15, metavar='N',
+                        help='number of epochs to train (default: 14)')
+    parser.add_argument('--lr', type=float, default=0.001, metavar='LR',
+                        help='learning rate (default: 0.001)')
+    parser.add_argument('--momentum', type=float, default=0.9, metavar='M',
+                        help='momentum (default: 0.9)')
+    parser.add_argument('--no-cuda', action='store_true', default=False,
+                        help='disables CUDA training')
+    parser.add_argument('--seed', type=int, default=1, metavar='S',
+                        help='random seed (default: 1)')
+    parser.add_argument('--log-interval', type=int, default=10, metavar='N',
+                        help='how many batches to wait before logging training status')
+    parser.add_argument('--save-model', action='store_true', default=False,
+                        help='For Saving the current Model')
+    args = parser.parse_args()
+    return parser.parse_args()
 
 def read_off(file):
     if "OFF" != file.readline().strip():
@@ -40,7 +64,6 @@ def pcshow(xs,ys,zs):
                       selector=dict(mode='markers'))
     fig.show()
 
-
 def pointnetloss(outputs, labels, m3x3, m64x64, alpha = 0.0001):
     criterion = torch.nn.NLLLoss()
     bs=outputs.size(0)
@@ -52,7 +75,6 @@ def pointnetloss(outputs, labels, m3x3, m64x64, alpha = 0.0001):
     diff3x3 = id3x3-torch.bmm(m3x3,m3x3.transpose(1,2))
     diff64x64 = id64x64-torch.bmm(m64x64,m64x64.transpose(1,2))
     return criterion(outputs, labels) + alpha * (torch.norm(diff3x3)+torch.norm(diff64x64)) / float(bs)
-
 
 def train(model,train_loader,val_loader,epochs,save,device,optimizer):
     for epoch in range(epochs): 
@@ -94,6 +116,7 @@ def train(model,train_loader,val_loader,epochs,save,device,optimizer):
             torch.save(model.state_dict(), "save_" + str(epoch) + ".pth")
 
 def main():
+    args = get_args()
     path = Path(os.getcwd() + "/data/ModelNet10")
     print("your data path is: {}".format(path))
 
@@ -154,8 +177,8 @@ def main():
     print('Sample pointcloud shape: ', train_ds[0]['pointcloud'].size())
     print('Class: ', inv_classes[train_ds[0]['category']])
 
-    train_loader = DataLoader(dataset=train_ds, batch_size=32, shuffle=True)
-    valid_loader = DataLoader(dataset=valid_ds, batch_size=64)
+    train_loader = DataLoader(dataset=train_ds, batch_size=args.train_batch_size, shuffle=True)
+    valid_loader = DataLoader(dataset=valid_ds, batch_size=args.test_batch_size,shuffle=False)
 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     print(device)
@@ -164,12 +187,9 @@ def main():
     pointnet.to(device)
     print(pointnet)
 
-    optimizer = torch.optim.Adam(pointnet.parameters(), lr=0.001)
-    epochs = 2
+    optimizer = torch.optim.Adam(pointnet.parameters(), lr=args.lr)
     save = False
-    train(pointnet,train_loader,valid_loader,epochs,save,device,optimizer)
-    #model,train_loader,val_loader=None,epochs=15,save=True,device
-    #model,train_loader,val_loader=None,epochs=15,save=True,device
+    train(pointnet,train_loader,valid_loader,args.epochs,args.save_model,device,optimizer)
 
 if __name__ == "__main__":
     main()
