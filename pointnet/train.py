@@ -166,7 +166,8 @@ def main():
 
     optimizer = torch.optim.Adam(pointnet.parameters(), lr=0.001)
 
-    train(pointnet,train_loader,valid_loader,save=False,device=device)
+    train(pointnet,train_loader,valid_loader,save=False,device)
+    #model,train_loader,val_loader=None,epochs=15,save=True,device
 
 if __name__ == "__main__":
     main()
