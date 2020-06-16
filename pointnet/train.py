@@ -104,7 +104,7 @@ def train(model,train_loader,val_loader,epochs,save,device,optimizer):
             with torch.no_grad():
                 for data in val_loader:
                     inputs, labels = data['pointcloud'].to(device).float(), data['category'].to(device)
-                    outputs, __, __ = pointnet(inputs.transpose(1,2))
+                    outputs, __, __ = model(inputs.transpose(1,2))
                     _, predicted = torch.max(outputs.data, 1)
                     total += labels.size(0)
                     correct += (predicted == labels).sum().item()
