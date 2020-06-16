@@ -54,14 +54,14 @@ def pointnetloss(outputs, labels, m3x3, m64x64, alpha = 0.0001):
     return criterion(outputs, labels) + alpha * (torch.norm(diff3x3)+torch.norm(diff64x64)) / float(bs)
 
 
-def train(model, train_loader, val_loader=None,  epochs=15, save=True):
+def train(model, train_loader, val_loader=None, epochs=15, save=True):
     for epoch in range(epochs): 
-        pointnet.train()
+        model.train()
         running_loss = 0.0
         for i, data in enumerate(train_loader, 0):
             inputs, labels = data['pointcloud'].to(device).float(), data['category'].to(device)
             optimizer.zero_grad()
-            outputs, m3x3, m64x64 = pointnet(inputs.transpose(1,2))
+            outputs, m3x3, m64x64 = model(inputs.transpose(1,2))
 
             loss = pointnetloss(outputs, labels, m3x3, m64x64)
             loss.backward()
@@ -74,7 +74,7 @@ def train(model, train_loader, val_loader=None,  epochs=15, save=True):
                         (epoch + 1, i + 1, len(train_loader), running_loss / 10))
                     running_loss = 0.0
 
-        pointnet.eval()
+        model.eval()
         correct = total = 0
 
         # validation
@@ -91,7 +91,7 @@ def train(model, train_loader, val_loader=None,  epochs=15, save=True):
 
         # save the model
         if save:
-            torch.save(pointnet.state_dict(), "save_" + str(epoch) + ".pth")
+            torch.save(model.state_dict(), "save_" + str(epoch) + ".pth")
 
 def main():
     path = Path(os.getcwd() + "/data/ModelNet10")
@@ -166,7 +166,7 @@ def main():
 
     optimizer = torch.optim.Adam(pointnet.parameters(), lr=0.001)
 
-    train(pointnet, train_loader, valid_loader,  save=False)
+    train(pointnet,train_loader,valid_loader,save=False)
 
 if __name__ == "__main__":
     main()
