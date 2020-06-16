@@ -54,7 +54,7 @@ def pointnetloss(outputs, labels, m3x3, m64x64, alpha = 0.0001):
     return criterion(outputs, labels) + alpha * (torch.norm(diff3x3)+torch.norm(diff64x64)) / float(bs)
 
 
-def train(model,train_loader,val_loader,epochs,save,device):
+def train(model,train_loader,val_loader,epochs,save,device,optimizer):
     for epoch in range(epochs): 
         model.train()
         running_loss = 0.0
@@ -167,7 +167,7 @@ def main():
     optimizer = torch.optim.Adam(pointnet.parameters(), lr=0.001)
     epochs = 2
     save = False
-    train(pointnet,train_loader,valid_loader,epochs,save,device)
+    train(pointnet,train_loader,valid_loader,epochs,save,device,optimizer)
     #model,train_loader,val_loader=None,epochs=15,save=True,device
     #model,train_loader,val_loader=None,epochs=15,save=True,device
 
