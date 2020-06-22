@@ -63,17 +63,18 @@ def test(classes, net, device, testloader):
             outputs = net(images)
             _, predicted = torch.max(outputs, 1)
             c = (predicted == labels).squeeze()
+            test_loss += F.nll_loss(outputs, labels, reduction='sum').item()
             for i in range(4):
                 label = labels[i]
                 class_correct[label] += c[i].item()
                 class_total[label] += 1
 
+    print("Average loss {:.04f}\n".format(test_loss))
+    
     for i in range(10):
         print('Accuracy of %5s : %2d %%' % (
             classes[i], 100 * class_correct[i] / class_total[i]))
     
-
-
 def main():
     # Training settings
     parser = argparse.ArgumentParser(description='PyTorch Tutorial Example')
