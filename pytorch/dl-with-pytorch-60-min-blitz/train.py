@@ -69,7 +69,7 @@ def test(classes, net, device, testloader):
                 label = labels[i]
                 class_correct[label] += c[i].item()
                 class_total[label] += 1
-
+    test_loss /= len(test_loader)
     print("Average loss {:.04f}\n".format(test_loss))
     
     for i in range(10):
