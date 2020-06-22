@@ -1,4 +1,3 @@
-/data/ModelNet10/
-/data/__MACOSX
+/data/
 /__pycache__
 /model/__pycache__
