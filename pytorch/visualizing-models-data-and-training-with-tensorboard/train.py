@@ -52,7 +52,7 @@ def images_to_probs(net, images):
     preds = np.squeeze(preds_tensor.numpy())
     return preds, [F.softmax(el, dim=0)[i].item() for i, el in zip(preds, output)]
 
-def plot_classes_preds(net, images, labels):
+def plot_classes_preds(net, images, labels, classes):
     '''
     Generates matplotlib Figure using a trained network, along with images
     and labels from a batch, that shows the network's top prediction along
@@ -166,7 +166,7 @@ def main():
                 # ...log a Matplotlib Figure showing the model's predictions on a
                 # random mini-batch
                 writer.add_figure('predictions vs. actuals',
-                                plot_classes_preds(net, inputs, labels),
+                                plot_classes_preds(net, inputs, labels, classes),
                                 global_step=epoch * len(trainloader) + i)
                 running_loss = 0.0
     writer.close()
