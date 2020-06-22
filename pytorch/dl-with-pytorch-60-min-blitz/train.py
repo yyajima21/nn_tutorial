@@ -45,6 +45,7 @@ def train(args, net, device, trainloader, criterion, optimizer, epoch):
 def test(classes, net, device, testloader):
     correct = 0
     total = 0
+    test_loss = 0
     with torch.no_grad():
         for data in testloader:
             images, labels = data[0].to(device), data[1].to(device)
