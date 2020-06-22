@@ -74,7 +74,7 @@ def plot_classes_preds(net, images, labels, classes):
     return fig
 
 # helper function
-def add_pr_curve_tensorboard(class_index, test_probs, test_preds, global_step=0, writer=writer):
+def add_pr_curve_tensorboard(class_index, test_probs, test_preds, writer, global_step=0):
     '''
     Takes in a "class_index" from 0 to 9 and plots the corresponding
     precision-recall curve
