@@ -2,3 +2,4 @@
 /model/__pycache__/
 cifar_net.pth
 /runs
+__pycache__/
