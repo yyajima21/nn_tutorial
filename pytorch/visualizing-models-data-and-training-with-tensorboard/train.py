@@ -94,7 +94,7 @@ def plot_classes_preds(net, images, labels):
                     color=("green" if preds[idx]==labels[idx].item() else "red"))
     return fig
 
-def train(args, net, device, trainloader, criterion, optimizer, epoch):
+def train(args, net, device, trainloader, criterion, optimizer, epoch, writer):
     running_loss = 0.0
     for i, data in enumerate(trainloader, 0):
         # get the inputs; data is a list of [inputs, labels]
@@ -119,6 +119,7 @@ def train(args, net, device, trainloader, criterion, optimizer, epoch):
             writer.add_figure('predictions vs. actuals', plot_classes_preds(net, inputs, labels), global_step=epoch * len(trainloader) + i)
             running_loss = 0.0
     print('Finished Training')
+    return writer
 
 def add_pr_curve_tensorboard(class_index, test_probs, test_preds, writer, global_step=0):
     '''
@@ -202,7 +203,7 @@ def main():
                         label_img=images.unsqueeze(1))
 
     for epoch in range(args.epochs):
-        train(args, net, device, trainloader, criterion, optimizer, epoch)
+        writer = train(args, net, device, trainloader, criterion, optimizer, epoch)
 
     # 1. gets the probability predictions in a test_size x num_classes Tensor
     # 2. gets the preds in a test_size Tensor
