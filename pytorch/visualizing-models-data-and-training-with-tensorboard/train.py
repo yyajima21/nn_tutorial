@@ -203,7 +203,7 @@ def main():
                         label_img=images.unsqueeze(1))
 
     for epoch in range(args.epochs):
-        writer = train(args, net, device, trainloader, criterion, optimizer, epoch)
+        writer = train(args, net, device, trainloader, criterion, optimizer, epoch, writer)
 
     # 1. gets the probability predictions in a test_size x num_classes Tensor
     # 2. gets the preds in a test_size Tensor
