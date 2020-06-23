@@ -201,7 +201,7 @@ def main():
                         metadata=class_labels,
                         label_img=images.unsqueeze(1))
 
-    for epoch in range(args.epocjs):
+    for epoch in range(args.epochs):
         train(args, net, device, trainloader, criterion, optimizer, epoch)
 
     # 1. gets the probability predictions in a test_size x num_classes Tensor
