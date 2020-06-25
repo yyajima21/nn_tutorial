@@ -195,6 +195,8 @@ def main():
 
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.SGD(net.parameters(), lr=args.lr, momentum=args.momentum)
+    
+    comment = f' batch_size={batch_size} lr={lr} shuffle={shuffle}'
 
     # default `log_dir` is "runs" - we'll be more specific here
     writer = SummaryWriter('runs/fashion_mnist_experiment_1')
