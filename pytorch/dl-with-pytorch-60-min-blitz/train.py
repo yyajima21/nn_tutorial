@@ -100,6 +100,7 @@ def main():
     torch.manual_seed(args.seed)
 
     device = torch.device("cuda" if use_cuda else "cpu")
+    print(device)
 
     kwargs = {'num_workers': 2, 'pin_memory': True} if use_cuda else {}
 
@@ -121,7 +122,6 @@ def main():
             'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
 
     net = model.model.Net().to(device)
-    print(net)
 
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.SGD(net.parameters(), lr=args.lr, momentum=args.momentum)
