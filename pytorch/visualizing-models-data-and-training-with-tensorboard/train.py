@@ -98,7 +98,7 @@ def train(args, net, device, trainloader, criterion, optimizer, epoch, writer):
     running_loss = 0.0
     for i, data in enumerate(trainloader, 0):
         # get the inputs; data is a list of [inputs, labels]
-        inputs, labels = data
+        inputs, labels = data[0].to(device), data[1].to(device)
         # zero the parameter gradients
         optimizer.zero_grad()
         # forward + backward + optimize
@@ -129,7 +129,7 @@ def test(net, device, testloader, writer):
     class_preds = []
     with torch.no_grad():
         for data in testloader:
-            images, labels = data
+            images, labels = data[0].to(device), data[1].to(device)
             output = net(images)
             class_probs_batch = [F.softmax(el, dim=0) for el in output]
             _, class_preds_batch = torch.max(output, 1)
@@ -166,8 +166,9 @@ def main():
     torch.manual_seed(args.seed)
 
     device = torch.device("cuda" if use_cuda else "cpu")
+    print(device)
 
-    kwargs = {'num_workers': 2, 'pin_memory': True} if use_cuda else {}
+    #kwargs = {'num_workers': 2, 'pin_memory': True} if use_cuda else {}
 
     # transforms
     transform = transforms.Compose(
@@ -192,11 +193,13 @@ def main():
                                             shuffle=False, num_workers=args.num_workers)
     
     net = model.model.Net()
+    net.to(device)
+
 
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.SGD(net.parameters(), lr=args.lr, momentum=args.momentum)
     
-    comment = f' batch_size={batch_size} lr={lr} shuffle={shuffle}'
+    #comment = f' batch_size={batch_size} lr={lr} shuffle={shuffle}'
 
     # default `log_dir` is "runs" - we'll be more specific here
     writer = SummaryWriter('runs/fashion_mnist_experiment_1')
@@ -214,7 +217,7 @@ def main():
     # write to tensorboard
     writer.add_image('four_fashion_mnist_images', img_grid)
 
-    writer.add_graph(net, images)
+    writer.add_graph(net, images.to(device))
 
     # select random images and their target indices
     images, labels = select_n_random(trainset.data, trainset.targets)
@@ -232,6 +235,11 @@ def main():
         writer = train(args, net, device, trainloader, criterion, optimizer, epoch, writer)
         writer = test(net, device, testloader, writer)
     writer.close()
+
+    # Verifying the performance
+    if args.save_model:
+        PATH = './mnist_net.pth'
+        torch.save(net.state_dict(), PATH)
     
 if __name__ == '__main__':
     main()
