@@ -15,7 +15,10 @@ import os
 import numpy as np
 import torch.utils.data
 
-
+"""
+TODO: 1. create a global utility library for argparser argument
+      2. Clean up testing code to output prediction
+"""
 def get_model_instance_segmentation(num_classes):
     # load an instance segmentation model pre-trained pre-trained on COCO
     model = torchvision.models.detection.maskrcnn_resnet50_fpn(pretrained=True)
