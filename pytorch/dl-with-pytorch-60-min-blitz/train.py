@@ -57,6 +57,7 @@ def test(classes, net, device, testloader):
 
     class_correct = list(0. for i in range(10))
     class_total = list(0. for i in range(10))
+    
     with torch.no_grad():
         for data in testloader:
             images, labels = data[0].to(device), data[1].to(device)
@@ -67,13 +68,11 @@ def test(classes, net, device, testloader):
                 label = labels[i]
                 class_correct[label] += c[i].item()
                 class_total[label] += 1
-
+    
     for i in range(10):
         print('Accuracy of %5s : %2d %%' % (
             classes[i], 100 * class_correct[i] / class_total[i]))
     
-
-
 def main():
     # Training settings
     parser = argparse.ArgumentParser(description='PyTorch Tutorial Example')
@@ -102,6 +101,7 @@ def main():
     torch.manual_seed(args.seed)
 
     device = torch.device("cuda" if use_cuda else "cpu")
+    print(device)
 
     kwargs = {'num_workers': 2, 'pin_memory': True} if use_cuda else {}
 
@@ -123,7 +123,6 @@ def main():
             'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
 
     net = model.model.Net().to(device)
-    print(net)
 
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.SGD(net.parameters(), lr=args.lr, momentum=args.momentum)
