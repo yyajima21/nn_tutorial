@@ -1,6 +1,9 @@
-# Author: Yosuke Yajima
-# This code is originally developed by Sasank Chilamkurthy
-# I modified and refactoed the original code.
+# License: BSD
+# Original Author: Sasank Chilamkurthy
+# This code is originally developed by Sasank Chilamkurthy 
+# from the following website: 
+# https://pytorch.org/tutorials/beginner/transfer_learning_tutorial.html
+# I modified and refactoed the original code for my learning purpose.
 
 from __future__ import print_function, division
 
@@ -39,9 +42,13 @@ class Setting:
             )
             for x in ["train", "val"]
         }
-        self.dataset_sizes = {x: len(self.image_datasets[x]) for x in ["train", "val"]}
+        self.dataset_sizes = {
+            x: len(self.image_datasets[x]) for x in ["train", "val"]
+        }
         self.class_names = self.image_datasets["train"].classes
-        self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+        self.device = torch.device(
+            "cuda:0" if torch.cuda.is_available() else "cpu"
+        )
 
     def data_transforms(self):
         # Data augmentation and normalization for training
@@ -52,7 +59,9 @@ class Setting:
                     transforms.RandomResizedCrop(224),
                     transforms.RandomHorizontalFlip(),
                     transforms.ToTensor(),
-                    transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
+                    transforms.Normalize(
+                        [0.485, 0.456, 0.406], [0.229, 0.224, 0.225]
+                    ),
                 ]
             ),
             "val": transforms.Compose(
@@ -60,7 +69,9 @@ class Setting:
                     transforms.Resize(256),
                     transforms.CenterCrop(224),
                     transforms.ToTensor(),
-                    transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
+                    transforms.Normalize(
+                        [0.485, 0.456, 0.406], [0.229, 0.224, 0.225]
+                    ),
                 ]
             ),
         }
@@ -130,7 +141,11 @@ def train_model(model, criterion, optimizer, scheduler, setting):
             epoch_loss = running_loss / setting.dataset_sizes[phase]
             epoch_acc = running_corrects.double() / setting.dataset_sizes[phase]
 
-            print("{} Loss: {:.4f} Acc: {:.4f}".format(phase, epoch_loss, epoch_acc))
+            print(
+                "{} Loss: {:.4f} Acc: {:.4f}".format(
+                    phase, epoch_loss, epoch_acc
+                )
+            )
 
             # deep copy the model
             if phase == "val" and epoch_acc > best_acc:
@@ -170,7 +185,9 @@ def visualize_model(model, setting, num_images=6):
                 images_so_far += 1
                 ax = plt.subplot(num_images // 2, 2, images_so_far)
                 ax.axis("off")
-                ax.set_title("predicted: {}".format(setting.class_names[preds[j]]))
+                ax.set_title(
+                    "predicted: {}".format(setting.class_names[preds[j]])
+                )
                 imshow(inputs.cpu().data[j])
 
                 if images_so_far == num_images:
@@ -215,7 +232,9 @@ def main():
         )
 
         # Decay LR by a factor of 0.1 every 7 epochs
-        exp_lr_scheduler = lr_scheduler.StepLR(optimizer_conv, step_size=7, gamma=0.1)
+        exp_lr_scheduler = lr_scheduler.StepLR(
+            optimizer_conv, step_size=7, gamma=0.1
+        )
 
         model_conv = train_model(
             model_conv, criterion, optimizer_conv, exp_lr_scheduler, setting
@@ -227,7 +246,9 @@ def main():
         plt.show()
 
         if setting.args.save_model:
-            torch.save(model_conv.state_dict(), "fixed_feature_extractor_cnn.pt")
+            torch.save(
+                model_conv.state_dict(), "fixed_feature_extractor_cnn.pt"
+            )
 
     if setting.args.mode == "finetuning_convnet":
         print("mode: {}".format(setting.args.mode))
@@ -244,11 +265,15 @@ def main():
 
         # Observe that all parameters are being optimized
         optimizer_ft = optim.SGD(
-            model_ft.parameters(), lr=setting.args.lr, momentum=setting.args.momentum
+            model_ft.parameters(),
+            lr=setting.args.lr,
+            momentum=setting.args.momentum,
         )
 
         # Decay LR by a factor of 0.1 every 7 epochs
-        exp_lr_scheduler = lr_scheduler.StepLR(optimizer_ft, step_size=7, gamma=0.1)
+        exp_lr_scheduler = lr_scheduler.StepLR(
+            optimizer_ft, step_size=7, gamma=0.1
+        )
 
         model_ft = train_model(
             model_ft, criterion, optimizer_ft, exp_lr_scheduler, setting
