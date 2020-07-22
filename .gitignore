@@ -1,9 +1,2 @@
 .vscode/
-/yolo/cfg/
-/yolo/data/
-/yolo/det/
-/yolo/imgs/
-/yolo/model/
-/yolo/pallete
-/yolo/__pycache__/
-/pytorch/env/
+env/
