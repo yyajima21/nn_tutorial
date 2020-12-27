@@ -1,5 +1,5 @@
-/build
+build/*
 /vscode
-/model
-/output
+model/*
+output/*
 /CMakeLists.txt
