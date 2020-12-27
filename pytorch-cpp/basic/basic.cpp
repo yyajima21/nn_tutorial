@@ -324,7 +324,6 @@ void print_script_module(const torch::jit::script::Module& module, size_t spaces
             std::cout << std::string(spaces, ' ') << sub_module.value.type()->name().value().name()
                 << " " << sub_module.name << "\n";
         }
-
         print_script_module(sub_module.value, spaces + 2);
     }
 }

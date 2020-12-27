@@ -2,4 +2,3 @@ build/*
 /vscode
 model/*
 output/*
-/CMakeLists.txt
